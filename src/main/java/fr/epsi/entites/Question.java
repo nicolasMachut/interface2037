@@ -1,10 +1,17 @@
 package fr.epsi.entites;
 
+import javax.persistence.Basic;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import org.hibernate.Session;
+
+import fr.epsi.outils.HibernateUtil;
 
 
 @Entity
@@ -12,14 +19,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Question {
 	
-	@Id
+	//Etats possibles pour une question
+	public static final String EN_ATTENTE = "ATTENTE";
+	public static final String OK  = "OK";
+	public static final String TRAITEMENT = "TRAITEMENT";
+	
+	
+	@Id  
+    @GeneratedValue(strategy=GenerationType.IDENTITY)  
+    @Basic  
 	private int id;
 	
-	@XmlElement
+	@Basic
 	private String question;
 	
+	@Basic
 	private String reponse;
 	
+	@Basic
 	private String etat;
 
 	public Question () {
@@ -62,13 +79,32 @@ public class Question {
 		this.etat = etat;
 	}
 	
-	@Override
-    public String toString() {
-		String anyString = "test";
-		String anyNumber = "yo";
-        return "MyBean{" +
-            "anyString='" + anyString + '\'' +
-            ", anyNumber=" + anyNumber +
-            '}';
-    }
+	public boolean estEnAttente () {
+		return getEtat().equals(EN_ATTENTE);
+	}
+
+	/**
+	 * <p>Enregistre la question en base de données</p>
+	 * @return la question avec l'id généré
+	 */
+	public Question enregistrer() {
+		
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        session.save(this);
+        session.getTransaction().commit();
+		return this;
+	}
+	
+	public static Question trouverQuestionParId (int id) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		Question question = (Question)session.get(Question.class, id);
+		return question;
+	}
+
+	public String toJSOn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
