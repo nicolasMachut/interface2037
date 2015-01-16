@@ -14,6 +14,7 @@ public class HibernateUtil {
     private static SessionFactory sessionFactory;
  
     private static SessionFactory buildSessionFactory() {
+    	
         try {
             Configuration configuration = new Configuration();
             
@@ -36,6 +37,7 @@ public class HibernateUtil {
             return sessionFactory;
         }
         catch (Throwable ex) {
+        	
             System.err.println("Erreur d'initialisation de la factory : " + ex);
             throw new ExceptionInInitializerError(ex);
         }

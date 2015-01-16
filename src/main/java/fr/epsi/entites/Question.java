@@ -82,6 +82,11 @@ public class Question {
 	public boolean estEnAttente () {
 		return getEtat().equals(EN_ATTENTE);
 	}
+	
+	public String toJSOn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * <p>Enregistre la question en base de données</p>
@@ -103,8 +108,18 @@ public class Question {
 		return question;
 	}
 
-	public String toJSOn() {
+	public static Question getPremiereQuestionEnAttente() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static void miseEnTraitementDeLaQuestion(int id2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean repondre(String reponseStr) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }
