@@ -17,7 +17,6 @@ public class Main {
         session.save(question);
         session.getTransaction().commit();
          
-        //terminate session factory, otherwise program won't end
         HibernateUtil.getSessionFactory().close();
     	
         String port = System.getenv("PORT");

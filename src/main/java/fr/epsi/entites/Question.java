@@ -3,15 +3,19 @@ package fr.epsi.entites;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 @Entity
 @Table(name="question")
+@XmlRootElement
 public class Question {
 	
 	@Id
 	private int id;
 	
+	@XmlElement
 	private String question;
 	
 	private String reponse;
@@ -57,4 +61,14 @@ public class Question {
 	public void setEtat(String etat) {
 		this.etat = etat;
 	}
+	
+	@Override
+    public String toString() {
+		String anyString = "test";
+		String anyNumber = "yo";
+        return "MyBean{" +
+            "anyString='" + anyString + '\'' +
+            ", anyNumber=" + anyNumber +
+            '}';
+    }
 }

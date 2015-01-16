@@ -17,13 +17,16 @@ public class HibernateUtil {
         try {
             Configuration configuration = new Configuration();
             
-            Properties props = new Properties();
-            props.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-            props.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/webservice_restfull");
-            props.put("hibernate.connection.username", "root");
-            props.put("hibernate.connection.password", "epsi812AJH");
-            props.put("hibernate.current_session_context_class", "thread");
-            configuration.setProperties(props);
+            Properties proprietes = new Properties();
+            proprietes.put("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
+            proprietes.put("hibernate.connection.url", "jdbc:hsqldb:mem:test");
+            proprietes.put("hibernate.connection.username", "sa");
+            proprietes.put("hibernate.connection.password", "epsi812AJH");
+            proprietes.put("hibernate.current_session_context_class", "thread");
+            proprietes.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+            proprietes.put("hibernate.show_sql", "true");
+            proprietes.put("hibernate.hbm2ddl.auto", "create");
+            configuration.setProperties(proprietes);
             configuration.addAnnotatedClass(Question.class);
              
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
@@ -33,7 +36,7 @@ public class HibernateUtil {
             return sessionFactory;
         }
         catch (Throwable ex) {
-            System.err.println("Initial SessionFactory creation failed." + ex);
+            System.err.println("Erreur d'initialisation de la factory : " + ex);
             throw new ExceptionInInitializerError(ex);
         }
     }
