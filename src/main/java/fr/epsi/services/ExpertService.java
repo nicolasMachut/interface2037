@@ -29,6 +29,7 @@ public class ExpertService extends Service {
 	@Path("/getQuestion/{idExpert}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public synchronized Response getQuestion (@PathParam("idExpert") String idExpert) {
+		
 		Response reponse;
 
 		//Récupération de la première question en attente
