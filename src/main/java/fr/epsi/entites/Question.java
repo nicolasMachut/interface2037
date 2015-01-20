@@ -1,14 +1,13 @@
 package fr.epsi.entites;
 
 import javax.persistence.Basic;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 
 import fr.epsi.outils.HibernateUtil;
@@ -16,13 +15,13 @@ import fr.epsi.outils.HibernateUtil;
 
 @Entity
 @Table(name="question")
-@XmlRootElement
 public class Question {
 	
 	//Etats possibles pour une question
 	public static final String EN_ATTENTE = "ATTENTE";
 	public static final String OK  = "OK";
 	public static final String TRAITEMENT = "TRAITEMENT";
+	public static final String ERREUR = "ERREUR";
 	
 	
 	@Id  
@@ -38,6 +37,9 @@ public class Question {
 	
 	@Basic
 	private String etat;
+	
+	@Basic
+	private String expert; // contient un identifiant permettant d'identifier le systeme expert ayant répondu à la question
 
 	public Question () {
 		
@@ -45,6 +47,9 @@ public class Question {
 	
 	public Question(String question) {
 		this.question = question;
+		this.etat = EN_ATTENTE;
+		this.expert = "";
+		this.reponse = "";
 	}
 
 	public int getId() {
@@ -57,6 +62,10 @@ public class Question {
 
 	public String getQuestion() {
 		return question;
+	}
+
+	public String getExpert() {
+		return expert;
 	}
 
 	public void setQuestion(String question) {
@@ -72,7 +81,7 @@ public class Question {
 	}
 
 	public String getEtat() {
-		return etat;
+		return this.etat;
 	}
 
 	public void setEtat(String etat) {
@@ -83,9 +92,13 @@ public class Question {
 		return getEtat().equals(EN_ATTENTE);
 	}
 	
-	public String toJSOn() {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean estEnTraitement () {
+		return getEtat().equals(TRAITEMENT);
+	}
+	
+	@Override
+	public String toString () {
+		return "";
 	}
 
 	/**
@@ -94,7 +107,7 @@ public class Question {
 	 */
 	public Question enregistrer() {
 		
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
         session.beginTransaction();
         session.save(this);
         session.getTransaction().commit();
@@ -102,24 +115,47 @@ public class Question {
 	}
 	
 	public static Question trouverQuestionParId (int id) {
-		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
 		session.beginTransaction();
 		Question question = (Question)session.get(Question.class, id);
+		session.getTransaction().commit();
 		return question;
 	}
 
 	public static Question getPremiereQuestionEnAttente() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static void miseEnTraitementDeLaQuestion(int id2) {
-		// TODO Auto-generated method stub
 		
+		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		session.beginTransaction();
+		Query query = session.createQuery("from Question where etat = :etat order by id ASC").setMaxResults(1);
+		query.setParameter("etat", Question.EN_ATTENTE);
+		Question question = (Question)query.uniqueResult();
+		session.getTransaction().commit();
+		return question;
 	}
 
-	public boolean repondre(String reponseStr) {
-		// TODO Auto-generated method stub
-		return false;
+	/**
+	 * <p>La réponse à la question est enregistrée en bdd et l'état de la question est passé à "OK"</p>
+	 * @param reponseStr
+	 */
+	public void repondre(String reponseStr) {
+		this.reponse = reponseStr;
+		this.etat = OK;
+		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		session.beginTransaction();
+		session.update(this);
+		session.getTransaction().commit();
+	}
+	
+	/**
+	 * <p>Le champ état de la question est passé à "TRAITEMENT" et l'idExpert et renseigné en base de données</p> 
+	 * @param idExpert 
+	 */
+	public void mettreEnTraitement(String idExpert) {
+		this.expert = idExpert;
+		this.etat = TRAITEMENT;
+		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		session.beginTransaction();
+		session.update(this);
+		session.getTransaction().commit();
 	}
 }

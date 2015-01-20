@@ -1,7 +1,6 @@
 package fr.epsi.services;
 
 import java.net.URI;
-import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,29 +20,30 @@ public class ClientService extends Service {
 	@Path("/question/{param}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response creerQuestion (@PathParam("param") String questionStr) {
-		Response reponse;
-		String reponseStr;
 		
-		// Création de la question à partir du parametre
+		Response reponse;
+		
 		Question question = new Question(questionStr);
 		
 		try {
-			// Enregistrement de la question en bdd et récupération de l'id
 			int id =  question.enregistrer().getId();
 			
 			// Création de l'uri permettant d'accéder à la ressource correspondant à la reponse
-			reponseStr = RACINE + "reponse/" + id;
+			String adresseRessource = RACINE + "client/reponse/" + id;
 			
-			reponse = Response.created(new URI(reponseStr)).build();
+			// Réponds un code 201 CREATED avec un en-tête Location contenant l'URI de la ressource
+			reponse = Response
+						.created(new URI(adresseRessource))
+						.entity("Votre question à bien été enregistrée, vous pourrez bientôt consulter la réponse à cette adresse : " + adresseRessource)
+						.build();
 			
 		} catch (Exception e) {
 			
-			// Dans le cas d'une erreur lors de l'enregistrement de la question
-			// Renvoie un code HTTP 500 Internal Server Error
-			reponseStr = "Une erreur interne au serveur est survenu lors de l'enregistrement de la question, veuillez reessayer plus tard.";
-			
 			Log.ecris("Problème lors de l'enregistrement de la question : " + e.getClass() + " - " + e.getMessage());
-			reponse = Response.serverError().build();
+			reponse = Response
+						.serverError()
+						.entity("Un problème est survenu sur le serveur, merci de revenir plus tard !!")
+						.build();
 		}
 		
 		return reponse;
@@ -58,16 +58,29 @@ public class ClientService extends Service {
 		Response response;
 		
 		Question question = Question.trouverQuestionParId(id);
-		
-		if (question == null) { //La question n'existe pas
-			response = Response.noContent().build();
+		if (question == null) {
+			response = Response
+						.status(Response.Status.NOT_FOUND)
+						.entity("La ressource à laquelle vous essayez d'accéder n'existe pas.")
+						.build();
 			
 		} else {
-			
+			try {
+				System.out.println(question.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
 			if (question.estEnAttente()) {
-				response = Response.noContent().build();
+				response = Response
+							.accepted(question)
+							.entity("Aucune réponse n'a pour le moment été apporté.")
+							.build();
 			} else {
-				response = Response.accepted(question).build();
+				response = Response
+							.accepted(question)
+							.entity("Votre question à été répondu par un de nos experts en question !")
+							.build();
 			}
 		}
 		
