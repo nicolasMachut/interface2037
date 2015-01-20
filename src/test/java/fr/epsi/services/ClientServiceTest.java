@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ClientServiceTest extends JerseyTest {
@@ -16,6 +17,7 @@ public class ClientServiceTest extends JerseyTest {
        return new ResourceConfig(ClientService.class);
     }
 	
+	@Ignore
 	@Test
 	public void poserQuestionVerifierCodeStatusSuccesEtLocation () {
 		
@@ -28,12 +30,4 @@ public class ClientServiceTest extends JerseyTest {
 		reponse = clientService.creerQuestion("maquestion");
 		assertEquals("[http://localhost:8282/client/reponse/2]", reponse.getMetadata().get("location").toString());
 	}
-	
-	@Test public void demanderUneReponse () {
-		
-	}
-	
-	
-	
-	
 }
