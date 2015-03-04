@@ -45,7 +45,7 @@ public class ClientService extends Service {
 						.entity("Un problème est survenu sur le serveur, merci de revenir plus tard !!")
 						.build();
 		}
-		
+		             
 		return reponse;
 	}
 	

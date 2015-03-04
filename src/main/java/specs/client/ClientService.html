@@ -1,0 +1,84 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="page-header">
+		<h1>Service Client Test</h1>
+		<p>Page présentant le résultat des tests d'acceptation liés au
+			service client</p>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Test de l'enregistrement d'une question</h3>
+		</div>
+		<div class="panel-body">
+			Quand un usager pose la question "<span concordion:set="#question">Quel temps fait-il à Bordeaux ?</span>"
+			<ul>
+				<li>Alors le serveur indique qu'il à enregistré la question avec le code :  <span concordion:assertEquals="poserQuestionVerifierCodeStatusSucces(#question)">201</span></li>
+				<li>Et il permet à l'usager de localiser la réponse lorsqu'elle sera disponible : <span concordion:assertEquals="poserQuestionVerifierLocation(#question)">[http://localhost:8282/client/reponse/2]</span></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Test récupération d'une question par un systeme expert</h3>
+		</div>
+		<div class="panel-body">
+			Etant donné qu'il existe une question en attente de réponse
+			Quand le systeme expert nommé "<span concordion:set="#question">Quel temps fait-il à Bordeaux ?</span>" demande la prochaine question au serveur
+			Alors il récupère la question en attente : 
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Test demande d'une question par le systeme expert xxxx (il n'existe pas de question)</h3>
+		</div>
+		<div class="panel-body">
+		
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Le systeme expert répond à la question xxxxxx</h3>
+		</div>
+		<div class="panel-body">
+		
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">L'usager demande une réponse qui n'a pas encore été fournis</h3>
+		</div>
+		<div class="panel-body">
+		
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">L'usager demande une réponse qui n'a pas encore été fournis</h3>
+		</div>
+		<div class="panel-body">
+		
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">L'usager demande une réponse au serveur</h3>
+		</div>
+		<div class="panel-body">
+		
+		</div>
+	</div>
+	
+</body>
+</html>

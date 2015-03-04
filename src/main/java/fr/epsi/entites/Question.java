@@ -107,7 +107,7 @@ public class Question {
 	 */
 	public Question enregistrer() {
 		
-        Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.save(this);
         session.getTransaction().commit();
@@ -115,7 +115,7 @@ public class Question {
 	}
 	
 	public static Question trouverQuestionParId (int id) {
-		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		Question question = (Question)session.get(Question.class, id);
 		session.getTransaction().commit();
@@ -124,7 +124,7 @@ public class Question {
 
 	public static Question getPremiereQuestionEnAttente() {
 		
-		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		Query query = session.createQuery("from Question where etat = :etat order by id ASC").setMaxResults(1);
 		query.setParameter("etat", Question.EN_ATTENTE);
@@ -140,7 +140,7 @@ public class Question {
 	public void repondre(String reponseStr) {
 		this.reponse = reponseStr;
 		this.etat = OK;
-		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.update(this);
 		session.getTransaction().commit();
@@ -153,7 +153,7 @@ public class Question {
 	public void mettreEnTraitement(String idExpert) {
 		this.expert = idExpert;
 		this.etat = TRAITEMENT;
-		Session session = HibernateUtil.getSessionFactoryHsqlDB().getCurrentSession();
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.update(this);
 		session.getTransaction().commit();

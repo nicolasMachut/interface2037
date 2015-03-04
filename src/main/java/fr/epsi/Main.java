@@ -10,7 +10,7 @@ public class Main {
         String port = System.getenv("PORT");
         
         if (port == null || port.isEmpty()) {
-            port = "8282";
+            port = "8283";
         }
 
         final Server server = new Server(Integer.valueOf(port));
