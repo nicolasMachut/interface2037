@@ -1,5 +1,7 @@
 package fr.epsi.outils;
 
+import java.util.Properties;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -11,8 +13,22 @@ public class HibernateUtil {
      
     private static void buildSessionFactory () {
     	
+    	Properties proprietes = new Properties();
+        proprietes.put("hibernate.connection.driver_class", "org.hsqldb.jdbcDriver");
+        proprietes.put("hibernate.connection.url", "jdbc:hsqldb:mem:test");
+        proprietes.put("hibernate.connection.username", "sa");
+        proprietes.put("hibernate.connection.password", "epsi812AJH");
+        proprietes.put("hibernate.current_session_context_class", "thread");
+        proprietes.put("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+        proprietes.put("hibernate.show_sql", "true");
+        proprietes.put("hibernate.hbm2ddl.auto", "create-drop");
+    	
+        
         try {
             Configuration configuration = new Configuration();
+            
+            configuration.setProperties(proprietes);
+            configuration.addAnnotatedClass(fr.epsi.entites.Question.class);
             
             configuration.configure();
              
