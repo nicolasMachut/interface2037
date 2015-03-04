@@ -40,16 +40,14 @@ public class Question {
 	
 	@Basic
 	private String expert; // contient un identifiant permettant d'identifier le systeme expert ayant répondu à la question
-
+	
 	public Question () {
 		
 	}
-	
+
 	public Question(String question) {
 		this.question = question;
 		this.etat = EN_ATTENTE;
-		this.expert = "";
-		this.reponse = "";
 	}
 
 	public int getId() {
@@ -98,7 +96,13 @@ public class Question {
 	
 	@Override
 	public String toString () {
-		return "";
+		String json = "Question : {"
+				+ "id : " + this.id + ", "
+				+ "question : " + this.question + ", "
+				+ "expert : " + this.expert + ", "
+				+ "reponse : " + this.reponse
+				+ "}";
+		return json;
 	}
 
 	/**

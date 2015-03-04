@@ -26,7 +26,7 @@ public class ExpertService extends Service {
 	 * @throws JsonGenerationException 
 	 */
 	@GET
-	@Path("/getQuestion/{idExpert}")
+	@Path("/question/{idExpert}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public synchronized Response getQuestion (@PathParam("idExpert") String idExpert) {
 		Response reponse;
@@ -35,9 +35,9 @@ public class ExpertService extends Service {
 		Question question = Question.getPremiereQuestionEnAttente();
 		
 		if (question != null) {
-			
 			question.mettreEnTraitement(idExpert);
-			reponse = Response.ok(question).entity(question).build();
+			reponse = Response.ok(question).entity(question.toString()).build();
+			
 		} else {
 			reponse = Response.status(Response.Status.NOT_FOUND).entity("Aucune question en attente.").build();
 		}
