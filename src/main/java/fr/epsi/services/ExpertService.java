@@ -1,9 +1,11 @@
 package fr.epsi.services;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.SQLException;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -29,17 +31,29 @@ public class ExpertService extends Service {
 	@Path("/question/{idExpert}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public synchronized Response getQuestion (@PathParam("idExpert") String idExpert) {
+		
 		Response reponse;
 
 		//Récupération de la première question en attente
-		Question question = Question.getPremiereQuestionEnAttente();
+		Question question = Question.getQuestionSansReponse(idExpert);
+		
+		if (question == null)  {
+			question = Question.getPremiereQuestionEnAttente();
+		}
 		
 		if (question != null) {
 			question.mettreEnTraitement(idExpert);
-			reponse = Response.ok(question).entity(question.toString()).build();
-			
+			reponse = Response
+					.ok()
+					.entity(question.toString())
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		} else {
-			reponse = Response.status(Response.Status.NOT_FOUND).entity("Aucune question en attente.").build();
+			reponse = Response
+					.status(Response.Status.ACCEPTED)
+					.entity("{ \"message\" : \"Aucune question en attente ! Paf Pouf Patou tout doux ! \" }")
+					.header("Access-Control-Allow-Origin", "*")
+					.build();
 		}
 
 		return reponse;
@@ -54,8 +68,8 @@ public class ExpertService extends Service {
 	 * @return
 	 * @throws SQLException 
 	 */
-	@PUT
-	@Path("/repondre/{idExpert}/{id}/{reponse}")
+	@POST
+	@Path("/reponse/{idExpert}/{id}/{reponse}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int id, @PathParam("reponse") String reponseStr) throws SQLException {
 		
@@ -68,15 +82,18 @@ public class ExpertService extends Service {
 			// On vérifie que la question est bien en "TRAITEMENT" et que c'est le bon system expert qui fournit la réponse
 			if (question.estEnTraitement() && question.getExpert().equals(idExpert)) {
 				question.repondre(reponseStr);
-				reponse = Response.ok().entity("Votre réponse à bien été enregistrée.").build();
-				
+				reponse = Response
+						.ok()
+						.entity("Votre réponse à bien été enregistrée.")
+						.header("Access-Control-Allow-Origin", "*")
+						.build();
 			} else {
-				reponse = Response.status(Response.Status.FORBIDDEN).encoding("Vous ne pouvez pas répondre à cette question.").build();				
+				reponse = Response.status(Response.Status.FORBIDDEN).encoding("Vous ne pouvez pas répondre à cette question.").header("Access-Control-Allow-Origin", "*").build();				
 			}
 			
 		} else {
 			// La question n'existe pas
-			reponse = Response.status(Response.Status.NOT_FOUND).entity("Vous ne pouvez pas répondre à une question qui existe pas, enfin ...").build();
+			reponse = Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").entity("Vous ne pouvez pas répondre à une question qui existe pas, enfin ...").build();
 		}
 		
 		return reponse;

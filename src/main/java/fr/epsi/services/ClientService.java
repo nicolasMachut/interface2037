@@ -7,19 +7,27 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import fr.epsi.entites.Question;
 import fr.epsi.outils.Log;
+import fr.epsi.outils.Message;
 
 @Path("client")
 public class ClientService extends Service {
 	
+	private ObjectMapper mapper;
+	
+	public ClientService() {
+		this.mapper = new ObjectMapper();
+	}
+	
 	@POST
 	@Path("/question/{param}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response creerQuestion (@PathParam("param") String questionStr) {
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response creerQuestion (@PathParam("param") String questionStr) throws Exception {
 		
 		Response reponse;
 		
@@ -34,15 +42,18 @@ public class ClientService extends Service {
 			// Réponds un code 201 CREATED avec un en-tête Location contenant l'URI de la ressource
 			reponse = Response
 						.created(new URI(adresseRessource))
-						.entity("Votre question à bien été enregistrée, vous pourrez bientôt consulter la réponse à cette adresse : " + adresseRessource)
+ 						.entity(mapper.writeValueAsString(new Message("Votre question à bien été enregistrée")))
+						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Allow-Headers", "*")
 						.build();
-			
+				
 		} catch (Exception e) {
 			
 			Log.ecris("Problème lors de l'enregistrement de la question : " + e.getClass() + " - " + e.getMessage());
 			reponse = Response
 						.serverError()
-						.entity("Un problème est survenu sur le serveur, merci de revenir plus tard !!")
+						.entity(mapper.writeValueAsString(new Message("Un problème est survenu sur le serveur, merci de revenir plus tard !!")))
+						.header("Access-Control-Allow-Origin", "*")
 						.build();
 		}
 		             
@@ -58,28 +69,27 @@ public class ClientService extends Service {
 		Response response;
 		
 		Question question = Question.trouverQuestionParId(id);
+		
 		if (question == null) {
 			response = Response
 						.status(Response.Status.NOT_FOUND)
 						.entity("La ressource à laquelle vous essayez d'accéder n'existe pas.")
+						.header("Access-Control-Allow-Origin", "*")
 						.build();
 			
 		} else {
-			try {
-				System.out.println(question.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-			}
+			
 			if (question.estEnAttente()) {
 				response = Response
-							.accepted(question)
+							.accepted()
 							.entity("Aucune réponse n'a pour le moment été apporté.")
+							.header("Access-Control-Allow-Origin", "*")
 							.build();
 			} else {
 				response = Response
-							.accepted(question)
-							.entity("Votre question à été répondu par un de nos experts en question !")
+							.ok(    )
+							.entity("Votre question à été répondu par un de nos experts en question ! ")
+							.header("Access-Control-Allow-Origin", "*")
 							.build();
 			}
 		}

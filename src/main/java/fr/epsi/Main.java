@@ -4,13 +4,15 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class Main {
+	
+	public static final String PORT = "8283";
 
     public static void main(String[] args) throws Exception {
     	
         String port = System.getenv("PORT");
         
         if (port == null || port.isEmpty()) {
-            port = "8283";
+            port = PORT;
         }
 
         final Server server = new Server(Integer.valueOf(port));

@@ -19,7 +19,7 @@ public class ClientServiceTest extends JerseyTest {
 	
 	@Ignore
 	@Test
-	public void poserQuestionVerifierCodeStatusSuccesEtLocation () {
+	public void poserQuestionVerifierCodeStatusSuccesEtLocation () throws Exception {
 		
 		ClientService clientService = new ClientService();
 		Response reponse = clientService.creerQuestion("maquestion");

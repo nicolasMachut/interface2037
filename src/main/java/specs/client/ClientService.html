@@ -13,31 +13,66 @@
 
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Test de l'enregistrement d'une question</h3>
+			<h3 class="panel-title">Un usager pose une question</h3>
 		</div>
 		<div class="panel-body">
 			Quand un usager pose la question "<span concordion:set="#question">Quel temps fait-il à Bordeaux ?</span>"
 			<ul>
 				<li>Alors le serveur indique qu'il à enregistré la question avec le code :  <span concordion:assertEquals="poserQuestionVerifierCodeStatusSucces(#question)">201</span></li>
-				<li>Et il permet à l'usager de localiser la réponse lorsqu'elle sera disponible : <span concordion:assertEquals="poserQuestionVerifierLocation(#question)">[http://localhost:8282/client/reponse/2]</span></li>
+				<li>Et il permet à l'usager de localiser la réponse lorsqu'elle sera disponible : <span concordion:assertEquals="poserQuestionVerifierLocation(#question)">[http://localhost:8283/client/reponse/2]</span></li>
 			</ul>
 		</div>
 	</div>
 	
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Test récupération d'une question par un systeme expert</h3>
+			<h3 class="panel-title">Un système expert consulte la prochaine question</h3>
 		</div>
 		<div class="panel-body">
-			Etant donné qu'il existe une question en attente de réponse
-			Quand le systeme expert nommé "<span concordion:set="#question">Quel temps fait-il à Bordeaux ?</span>" demande la prochaine question au serveur
+			<p>Étant donné qu'il existe une question en attente de réponse</p>
+			<p>Quand le système expert "<span concordion:set="#idExpert">masterExpertSystem</span>" demande la prochaine question au serveur</p>
 			Alors il récupère la question en attente : 
+			<ul>
+				<li>Code : <span concordion:assertEquals="getQuestionExisteCodeStatusSucces(#idExpert)">200</span></li>
+				<li>Question : <span concordion:assertEquals="getQuestionExisteSucces(#idExpert)">{"id":1,"question":"Quel temps fait-il à Bordeaux ?","reponse":null,"etat":"TRAITEMENT","expert":"masterExpertSystem"}</span></li>
+			</ul> 
 		</div>
 	</div>
 	
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Test demande d'une question par le systeme expert xxxx (il n'existe pas de question)</h3>
+			<h3 class="panel-title">Un système expert consulte la prochaine question</h3>
+		</div>
+		<div class="panel-body">
+			<p>Étant donné qu'il n'existe aucune question</p>
+			<p>Quand le système expert "<span concordion:set="#idExpert">masterExpertSystem</span>" demande la prochaine question au serveur</p>
+			<p>Alors le serveur indique qu'il n'existe pas de question</p>
+			<ul>
+				<li>Code : <span concordion:assertEquals="getQuestionExistePasStatusSucces(#idExpert)">202</span></li>
+				<li>Reponse : <span concordion:assertEquals="getQuestionExistePasSucces(#idExpert)">Aucune question en attente</span></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Un système expert répond à la question</h3>
+		</div>
+		<div class="panel-body">
+			<p>Étant donné que le système expert "<span concordion:set="#idExpert">masterExpertSystem</span>" a récupéré une question en attente</p>
+			<p>Et qu'il a trouvé une réponse "<span concordion:set="#reponse">bonne question, je sais pas !</span>"</p>
+			<p>Quand il fournit la réponse au serveur</p>
+			<p>Alors le serveur indique qu'il a enregistré la réponse à la question</p>
+			<ul>
+				<li>Code : <span concordion:assertEquals="getQuestionExistePasSucces(#idExpert)">Aucune question en attente</span></li>
+				<li>Reponse : <span concordion:assertEquals="getQuestionExistePasSucces(#idExpert)">Aucune question en attente</span></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Un usager consulte la réponse à sa question</h3>
 		</div>
 		<div class="panel-body">
 		
@@ -46,7 +81,7 @@
 	
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">Le systeme expert répond à la question xxxxxx</h3>
+			<h3 class="panel-title">Un usager consulte la réponse à sa question</h3>
 		</div>
 		<div class="panel-body">
 		
@@ -55,25 +90,7 @@
 	
 	<div class="panel panel-default">
 		<div class="panel-heading">
-			<h3 class="panel-title">L'usager demande une réponse qui n'a pas encore été fournis</h3>
-		</div>
-		<div class="panel-body">
-		
-		</div>
-	</div>
-	
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">L'usager demande une réponse qui n'a pas encore été fournis</h3>
-		</div>
-		<div class="panel-body">
-		
-		</div>
-	</div>
-	
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">L'usager demande une réponse au serveur</h3>
+			<h3 class="panel-title">Un système expert ne peut pas répondre à la question</h3>
 		</div>
 		<div class="panel-body">
 		

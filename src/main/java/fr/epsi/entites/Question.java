@@ -1,12 +1,16 @@
 package fr.epsi.entites;
 
+import java.io.IOException;
+
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -41,13 +45,17 @@ public class Question {
 	@Basic
 	private String expert; // contient un identifiant permettant d'identifier le systeme expert ayant répondu à la question
 	
+	@Transient
+	private ObjectMapper mapper;
+	
 	public Question () {
-		
+		this.mapper = new ObjectMapper();
 	}
 
 	public Question(String question) {
 		this.question = question;
 		this.etat = EN_ATTENTE;
+		this.mapper = new ObjectMapper();
 	}
 
 	public int getId() {
@@ -94,16 +102,6 @@ public class Question {
 		return getEtat().equals(TRAITEMENT);
 	}
 	
-	@Override
-	public String toString () {
-		String json = "Question : {"
-				+ "id : " + this.id + ", "
-				+ "question : " + this.question + ", "
-				+ "expert : " + this.expert + ", "
-				+ "reponse : " + this.reponse
-				+ "}";
-		return json;
-	}
 
 	/**
 	 * <p>Enregistre la question en base de données</p>
@@ -161,5 +159,35 @@ public class Question {
 		session.beginTransaction();
 		session.update(this);
 		session.getTransaction().commit();
+	}
+	
+	/**
+	 * <p>Récupère une question sans réponse appartenant à l'expert passé en paramètre</p>
+	 * @param idExpert
+	 * @return une question si existe, sinon null
+	 */
+	public static Question getQuestionSansReponse (String idExpert) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		Query query = session.createQuery("from Question where etat = :etat and expert = :expert and reponse is null  order by id ASC").setMaxResults(1);
+		query.setParameter("etat", Question.TRAITEMENT);
+		query.setParameter("expert", idExpert);
+		Question question = (Question)query.uniqueResult();
+		session.getTransaction().commit();
+		return question;
+	}
+	
+	@Override
+	public String toString () {
+		
+		String retour = null;
+		try {
+			retour = mapper.writeValueAsString(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+			retour = this.question;
+		}
+		
+		return retour;
 	}
 }
