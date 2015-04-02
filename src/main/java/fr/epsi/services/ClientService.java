@@ -10,12 +10,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.glassfish.jersey.server.spi.ResponseErrorMapper;
 
 import fr.epsi.entites.Question;
 import fr.epsi.outils.Log;
-import fr.epsi.outils.Message;
 
-@Path("client")
+
 public class ClientService extends Service {
 	
 	private ObjectMapper mapper;
@@ -27,7 +27,7 @@ public class ClientService extends Service {
 	@POST
 	@Path("/question/{param}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	public Response creerQuestion (@PathParam("param") String questionStr) throws Exception {
+	public Response creerQuestion (@PathParam("param") String questionStr) {
 		
 		Response reponse;
 		
@@ -39,22 +39,19 @@ public class ClientService extends Service {
 			// Création de l'uri permettant d'accéder à la ressource correspondant à la reponse
 			String adresseRessource = RACINE + "client/reponse/" + id;
 			
-			// Réponds un code 201 CREATED avec un en-tête Location contenant l'URI de la ressource
+			
+			// Réponds un code 202 ACCEPTED avec un en-tête Location contenant l'URI de la ressource
 			reponse = Response
-						.created(new URI(adresseRessource))
- 						.entity(mapper.writeValueAsString(new Message("Votre question à bien été enregistrée")))
+						.accepted()
 						.header("Access-Control-Allow-Origin", "*")
-						.header("Access-Control-Allow-Headers", "*")
+						.header("Access-Control-Expose-Headers", "Location")
+						.header("Location", new URI(adresseRessource))
 						.build();
 				
 		} catch (Exception e) {
 			
 			Log.ecris("Problème lors de l'enregistrement de la question : " + e.getClass() + " - " + e.getMessage());
-			reponse = Response
-						.serverError()
-						.entity(mapper.writeValueAsString(new Message("Un problème est survenu sur le serveur, merci de revenir plus tard !!")))
-						.header("Access-Control-Allow-Origin", "*")
-						.build();
+			reponse = this.reponseErreur();
 		}
 		             
 		return reponse;
@@ -66,31 +63,36 @@ public class ClientService extends Service {
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response getReponse (@PathParam("code") int id) {
 		
-		Response response;
+		Response response = null;
 		
 		Question question = Question.trouverQuestionParId(id);
 		
 		if (question == null) {
 			response = Response
 						.status(Response.Status.NOT_FOUND)
-						.entity("La ressource à laquelle vous essayez d'accéder n'existe pas.")
 						.header("Access-Control-Allow-Origin", "*")
 						.build();
 			
 		} else {
-			
-			if (question.estEnAttente()) {
-				response = Response
-							.accepted()
-							.entity("Aucune réponse n'a pour le moment été apporté.")
-							.header("Access-Control-Allow-Origin", "*")
-							.build();
-			} else {
-				response = Response
-							.ok(    )
-							.entity("Votre question à été répondu par un de nos experts en question ! ")
-							.header("Access-Control-Allow-Origin", "*")
-							.build();
+			try {
+				String adresseRessource = RACINE + "client/reponse/" + id;
+				if (question.estEnAttente()) {
+					// La question n'a pas encore été répondue
+					response = Response
+								.accepted(new URI(adresseRessource))
+								.header("Access-Control-Allow-Origin", "*")
+								.header("Access-Control-Expose-Headers", "Location")
+								.build();
+				} else {
+					// La question à été répondue, on l'envoie 
+					response = Response
+								.ok(mapper.writeValueAsString(question))
+								.header("Access-Control-Allow-Origin", "*")
+								.build();
+				}
+			} catch (Exception e) {
+				Log.ecris("Erreur lors de la récupération de la question " + id + " " + e.getClass() + " " + e.getMessage());
+				response = this.reponseErreur();
 			}
 		}
 		

@@ -14,9 +14,8 @@ import javax.ws.rs.core.Response;
 
 import fr.epsi.entites.Question;
 
-@Path("expert")
 public class ExpertService extends Service {
-	
+
 	/**
 	 * <p>Fournie une question en attente au systeme expert au format JSON</p>
 	 * <p>La méthode est synchronized pour empecher plusieurs systemes experts d'obtenir la mème question</p>
@@ -31,35 +30,37 @@ public class ExpertService extends Service {
 	@Path("/question/{idExpert}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public synchronized Response getQuestion (@PathParam("idExpert") String idExpert) {
-		
+
 		Response reponse;
 
 		//Récupération de la première question en attente
 		Question question = Question.getQuestionSansReponse(idExpert);
-		
+
 		if (question == null)  {
 			question = Question.getPremiereQuestionEnAttente();
 		}
-		
+
+
 		if (question != null) {
 			question.mettreEnTraitement(idExpert);
+
+			// Question trouvée
 			reponse = Response
-					.ok()
-					.entity(question.toString())
+					.accepted(question)
 					.header("Access-Control-Allow-Origin", "*")
 					.build();
 		} else {
+			// Aucune question en attente
 			reponse = Response
-					.status(Response.Status.ACCEPTED)
-					.entity("{ \"message\" : \"Aucune question en attente ! Paf Pouf Patou tout doux ! \" }")
+					.noContent()
 					.header("Access-Control-Allow-Origin", "*")
 					.build();
 		}
 
 		return reponse;
 	}
-	
-	
+
+
 	/**
 	 * <p>Permet au system expert de répondre à une question</p>
 	 * <p>Méthode PUT car le systeme expert connait l'URI de la ressource</p>
@@ -68,34 +69,51 @@ public class ExpertService extends Service {
 	 * @return
 	 * @throws SQLException 
 	 */
-	@POST
-	@Path("/reponse/{idExpert}/{id}/{reponse}")
+	@PUT
+	@Path("/question/{idExpert}/{id}/{reponse}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int id, @PathParam("reponse") String reponseStr) throws SQLException {
-		
-		Question question = Question.trouverQuestionParId(id);
-		
+	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr) throws SQLException {
+		return repondre(idExpert, idQuestion, Question.OK, reponseStr);
+	}
+
+	/**
+	 * <p>Permet au systeme expert de signifier qu'il n'a pas de réponse à donner à la question passé en paramètre</p>
+	 * @param idExpert
+	 * @param id
+	 * @return
+	 */
+	@PUT
+	@Path("/question/{idExpert}/{id}")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int id) {
+		return repondre(idExpert, id, Question.ERREUR, "");
+	}
+
+	
+	public Response repondre (String idExpert, int idQuestion, String etat, String reponseStr) {
+
+		Question question = Question.trouverQuestionParId(idQuestion);
+
 		Response reponse;
-		
+
 		if (question != null) {
-			
+
 			// On vérifie que la question est bien en "TRAITEMENT" et que c'est le bon system expert qui fournit la réponse
 			if (question.estEnTraitement() && question.getExpert().equals(idExpert)) {
-				question.repondre(reponseStr);
+				question.repondre(reponseStr, etat);
 				reponse = Response
 						.ok()
-						.entity("Votre réponse à bien été enregistrée.")
 						.header("Access-Control-Allow-Origin", "*")
 						.build();
 			} else {
-				reponse = Response.status(Response.Status.FORBIDDEN).encoding("Vous ne pouvez pas répondre à cette question.").header("Access-Control-Allow-Origin", "*").build();				
+				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				
 			}
-			
+
 		} else {
 			// La question n'existe pas
-			reponse = Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").entity("Vous ne pouvez pas répondre à une question qui existe pas, enfin ...").build();
+			reponse = Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 		}
-		
+
 		return reponse;
 	}
 }

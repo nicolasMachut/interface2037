@@ -3,69 +3,120 @@ import java.sql.SQLException;
 
 import javax.ws.rs.core.Response;
 
+import junit.framework.TestCase;
+
 import org.concordion.integration.junit4.ConcordionRunner;
+import org.hibernate.Session;
 import org.junit.runner.RunWith;
 
+import fr.epsi.outils.HibernateUtil;
 import fr.epsi.services.ClientService;
 import fr.epsi.services.ExpertService;
 
 @RunWith(ConcordionRunner.class)
-public class ClientServiceFixture {
-	
+public class ClientServiceFixture extends TestCase {
+
 	private ClientService clientService;
 	private ExpertService expertService;
 	
-	public ClientServiceFixture () {
+	public ClientServiceFixture() {
 		this.clientService = new ClientService();
 		this.expertService = new ExpertService();
 	}
-	
-	public int poserQuestionVerifierCodeStatusSucces (String question) throws Exception {
 
-		Response reponse = clientService.creerQuestion(question);
+	public void clean () {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.createSQLQuery("truncate table question").executeUpdate();
+		session.getTransaction().commit();
+	}
 
-		return reponse.getStatus();
-	}
-	
-	public String poserQuestionVerifierLocation (String question) throws Exception {
-		
-		Response reponse = clientService.creerQuestion(question);
-		
-		return reponse.getMetadata().get("location").toString();
-	}
-	
-	public int getQuestionExisteCodeStatusSucces (String idExpert) {
-		
-		Response reponse = expertService.getQuestion(idExpert);
+	public Response poserQuestionVerifierSucces (String question) throws Exception {
 
-		return reponse.getStatus();
+		Response reponse = null;
+		try {
+			reponse = clientService.creerQuestion(question);
+		} finally {
+			clean();
+		}		
+		return reponse;
 	}
-	
-	public String getQuestionExisteSucces (String idExpert) {
-		
-		Response reponse = expertService.getQuestion(idExpert);
 
-		return reponse.getEntity().toString();
+	public Response getQuestionExpertExisteSucces (String idExpert) {
+
+		Response reponse = null;
+		try {
+			reponse = clientService.creerQuestion("Quel temps fait-il à Bordeaux ?");
+			reponse = expertService.getQuestion(idExpert);
+		} finally {
+			clean();
+		}
+		
+		return reponse;
 	}
-	
+
 	public int getQuestionExistePasStatusSucces (String idExpert) {
-		
-		Response reponse = expertService.getQuestion(idExpert);
+
+		Response reponse = null;
+		try {
+			reponse = expertService.getQuestion(idExpert);	
+		} finally {
+			clean();
+		}
 
 		return reponse.getStatus();
 	}
-	
-	public String getQuestionExistePasSucces (String idExpert) {
-		
-		Response reponse = expertService.getQuestion(idExpert);
 
-		return reponse.getEntity().toString();
+
+	public Response repondreQuestionExpertSucces (String idExpert, String reponseStr) throws Exception {
+
+		Response reponse = null;
+		try {
+			clientService.creerQuestion("C'est ma question");
+			reponse = expertService.getQuestion(idExpert);
+			reponse = expertService.repondre(idExpert, 1,reponseStr);
+		} finally {
+			clean();
+		}
+		
+		return reponse;
 	}
 	
-	public int repondreQuestionCodeSucces (String idExpert, String reponseStr, int idQuestion) throws SQLException {
+	public Response clientPoseQuestionPasDeReponse(String question)
+	{
+		Response res = null;
 		
-		Response reponse = expertService.repondre(idExpert, idQuestion, reponseStr);
-		
-		return reponse.getStatus();
+		try {
+			res = clientService.creerQuestion(question);
+			clientService.getReponse(1);
+		} finally {
+			clean();
+		}
+				
+		return res;
 	}
+	
+	public Response clientPoseQuestionReponse(String question) throws NumberFormatException, SQLException
+	{
+		Response res = null;
+		
+		try {
+			res = clientService.creerQuestion(question);
+			res = expertService.getQuestion("alex");
+			res = expertService.repondre("alex",1, "reponse");
+			res = clientService.getReponse(1);
+		} finally {
+			clean();
+		}
+				
+		return res;
+	}
+	
+	public Response systemeExpertNePeutPasRepondreAUneQuestion () {
+		clientService.creerQuestion("C'est ma question");
+		
+		return null;
+	}
+	
+	
 }

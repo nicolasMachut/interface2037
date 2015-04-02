@@ -138,10 +138,11 @@ public class Question {
 	/**
 	 * <p>La réponse à la question est enregistrée en bdd et l'état de la question est passé à "OK"</p>
 	 * @param reponseStr
+	 * @param etat 
 	 */
-	public void repondre(String reponseStr) {
+	public void repondre(String reponseStr, String etat) {
 		this.reponse = reponseStr;
-		this.etat = OK;
+		this.etat = etat;
 		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.update(this);

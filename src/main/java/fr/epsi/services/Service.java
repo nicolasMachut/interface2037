@@ -1,6 +1,7 @@
 package fr.epsi.services;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import fr.epsi.Main;
 
@@ -11,5 +12,9 @@ public class Service {
 	
 	//Racine du webservice
 	protected final String RACINE = "http://localhost:"+Main.PORT+"/";
+	
+	public Response reponseErreur () {
+		return  Response.serverError().header("Access-Control-Allow-Origin", "*").build();
+	}
 	
 }
