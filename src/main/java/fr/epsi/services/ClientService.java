@@ -15,7 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fr.epsi.entites.Question;
 import fr.epsi.outils.Log;
 
-@Path("/interface2037")
+@Path("/interface2037/client")
 public class ClientService extends Service {
 	
 	private ObjectMapper mapper;
