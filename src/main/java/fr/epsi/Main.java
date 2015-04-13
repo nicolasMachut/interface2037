@@ -12,7 +12,7 @@ public class Main {
         String port = System.getenv("PORT");
         
         if (port == null || port.isEmpty()) {
-            port = PORT;
+            port = "8283";
         }
 
         final Server server = new Server(Integer.valueOf(port));

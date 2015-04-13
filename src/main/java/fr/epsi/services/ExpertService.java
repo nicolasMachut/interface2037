@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 
 import fr.epsi.entites.Question;
 
+@Path("/interface2037")
 public class ExpertService extends Service {
 
 	/**

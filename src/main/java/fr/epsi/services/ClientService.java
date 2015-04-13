@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fr.epsi.entites.Question;
 import fr.epsi.outils.Log;
 
+@Path("/interface2037")
 public class ClientService extends Service {
 	
 	private ObjectMapper mapper;
@@ -27,7 +28,7 @@ public class ClientService extends Service {
 	@Path("/question/{param}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response creerQuestion (@PathParam("param") String questionStr) {
-		
+
 		Response reponse;
 		
 		Question question = new Question(questionStr);
