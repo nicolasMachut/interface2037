@@ -1,50 +1,51 @@
-function getReponse () {
-
-    // Récupération de l'URL de la ressource
-	var lien = $("#lien").text();
-
-	var req = $.ajax({
-         url : lien,
-         dataType : "text",
-         type : 'GET'
-     });
-
-    var message;
-
-     req.success(function(req, status, xhr) {
-
-     	$("#reponse").empty();
-
-      	//$("#reponse").append("<p>"+obj.data+"</p>");
-
-      	var headers = xhr.getAllResponseHeaders().toLowerCase();
-
-        if (xhr.status == 202) {
-            message = "Votre question n'a pas encore de réponse. Veuillez patienter !";
-        } else if (xhr.status == 200) {
-            var obj = jQuery.parseJSON( req );
-            message = "Votre question à été répondu par un de nos experts : " + obj.reponse;
-        }
-
-     });
-
-     req.error(function( req, status, xhr ) {
-        if (xhr.status == 500) {
-            message = "Erreur lors de la récupération de la réponse à votre question";
-        } 
-     });
-
-     req.complete(function(req, status, xhr){
-        
-        $("#reponse").empty();
-        $("#reponse").append("<p>"+message+"</p>");
-     });
+function getReponse (lien) {
+alert("ta copine need un chien");
+//    // Récupération de l'URL de la ressource
+//
+//	var req = $.ajax({
+//         url : lien,
+//         dataType : "text",
+//         type : 'GET'
+//     });
+//
+//    var message;
+//    
+//     req.success(function(req, status, xhr) {
+//    	 
+//     	$("#reponse").empty();
+//
+//      	//$("#reponse").append("<p>"+obj.data+"</p>");
+//
+//      	var headers = xhr.getAllResponseHeaders().toLowerCase();
+//
+//        if (xhr.status == 202) {
+//            message = "Votre question n'a pas encore de réponse. Veuillez patienter !";
+//        } else if (xhr.status == 200) {
+//            var obj = jQuery.parseJSON( req );
+//            message = "Votre question à été répondu par un de nos experts : " + obj.reponse;
+//        }
+//
+//     });
+//
+//     req.error(function( req, status, xhr ) {
+//    	 
+//        if (xhr.status == 500) {
+//            message = "Erreur lors de la récupération de la réponse à votre question";
+//        } 
+//     });
+//
+//     req.complete(function(req, status, xhr){
+//        
+//        $("#reponse").empty();
+//        $("#reponse").append("<p>"+message+"</p>");
+//     });
 }
 
 
 function poserQuestion()
 
 {
+	$("#reponse").removeClass();
 	var question = $("#question").val();
 
     if (question == "") {
@@ -55,27 +56,31 @@ function poserQuestion()
 
 	var req = $.ajax({
 
-         url : "http://localhost:8283/question/" + question,
+         url : "http://localhost:8283/interface2037/client/question/" + question,
          dataType : "text",
-         type : 'POST'
+         type : "POST"
      });
-    
     var message;
 
      req.success(function(req, status, xhr) {
-       if (xhr.status == 201) {
+       if (xhr.status == 202) {
             message = "Votre question à bien été enregistrée.";
+            $("#reponse").addClass("alert alert-success");
+            $("#reponse").empty();
+            var location = xhr.getResponseHeader("Location");
+            $("#reponse").append("<p onclick='getReponse("+location+")'>"+location+"</p>");
        }
      });
 
      req.error(function( req, status, xhr ) {
         if (xhr.status == 500) {
             message = "Erreur lors de l'enregistrement de la question.";
+            $("#reponse").addClass("alert alert-error");
          }
      });
 
      req.done(function(req, status, xhr){
-        $(".listview_test").append("<p>"+message+"</p>");
+        $("#reponse").append("<p>"+message+"</p>");
         if (xhr.status == 201) {
             $(".listview_test").append("<p><a id='lien' onclick='getReponse()'>"+xhr.getResponseHeader("Location")+"</a></p>");
         }
@@ -89,7 +94,7 @@ function demanderQuestion()
 
 {
     var req = $.ajax({
-        url : "http://localhost:8283/expert/question/expertName",
+        url : "http://localhost:8283/interface2037/expert/question/expertName",
         dataType : "text",
         type : "GET"
     });

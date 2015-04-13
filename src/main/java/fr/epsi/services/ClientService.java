@@ -28,7 +28,7 @@ public class ClientService extends Service {
 	@Path("/question/{param}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response creerQuestion (@PathParam("param") String questionStr) {
-
+		
 		Response reponse;
 		
 		Question question = new Question(questionStr);
@@ -37,7 +37,7 @@ public class ClientService extends Service {
 			int id =  question.enregistrer().getId();
 			
 			// Création de l'uri permettant d'accéder à la ressource correspondant à la reponse
-			String adresseRessource = RACINE + "client/reponse/" + id;
+			String adresseRessource = RACINE + "client/question/" + id;
 			
 			
 			// Réponds un code 202 ACCEPTED avec un en-tête Location contenant l'URI de la ressource
