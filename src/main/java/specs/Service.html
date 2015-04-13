@@ -6,9 +6,8 @@
 </head>
 <body>
 	<div class="page-header">
-		<h1>Service Client Test</h1>
-		<p>Page présentant le résultat des tests d'acceptation liés au
-			service client</p>
+		<h1>Interface 2037 Tests</h1>
+		<p>Page présentant le résultat des tests d'acceptation de l'interface 2037</p>
 	</div>
 	
 	<div class="panel panel-default">
@@ -114,9 +113,24 @@
 			<p>Et qu'il ne peut pas fournir la réponse</p>
 			<p>Quand il notifie le serveur de son échec</p>
 			<p>Alors le serveur enregistre que cette question n'a pas de réponse connue.</p>
+			<span concordion:execute="#result = systemeExpertNePeutPasRepondreAUneQuestion()"></span>
 			<ul>
-				<li></li>
-				<li></li>
+				<li>Code : <span concordion:assertEquals="#result.status">200</span></li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Un client demande la réponse à une question à laquelle aucune reponse n'a été apportée</h3>
+		</div>
+		<div class="panel-body">
+			<p>Étant donné que le client demande la réponse à une question en attente</p>
+			<p>Et qu'un systeme expert à précisé qu'il ne connaissait pas la réponse à la question</p>
+			<p>Alors le serveur indique au client que la question est en échec</p>
+			<span concordion:execute="#result = clientDemandeReponseQuestionEnEchec()"></span>
+			<ul>
+				<li>Code : <span concordion:assertEquals="#result.status">200</span></li>
 			</ul>
 		</div>
 	</div>

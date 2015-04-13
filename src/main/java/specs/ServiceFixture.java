@@ -1,4 +1,4 @@
-package specs.client;
+package specs;
 import java.sql.SQLException;
 
 import javax.ws.rs.core.Response;
@@ -14,12 +14,12 @@ import fr.epsi.services.ClientService;
 import fr.epsi.services.ExpertService;
 
 @RunWith(ConcordionRunner.class)
-public class ClientServiceFixture extends TestCase {
+public class ServiceFixture extends TestCase {
 
 	private ClientService clientService;
 	private ExpertService expertService;
 	
-	public ClientServiceFixture() {
+	public ServiceFixture() {
 		this.clientService = new ClientService();
 		this.expertService = new ExpertService();
 	}
@@ -113,9 +113,32 @@ public class ClientServiceFixture extends TestCase {
 	}
 	
 	public Response systemeExpertNePeutPasRepondreAUneQuestion () {
-		clientService.creerQuestion("C'est ma question");
 		
-		return null;
+		Response res = null;
+		
+		try {
+			res = clientService.creerQuestion("C'est ma question");
+			res = expertService.getQuestion("nicolas");
+			res = expertService.repondre("nicolas", 1);
+		} finally {
+			clean();
+		}
+		
+		return res;
+	}
+	
+	public Response clientDemandeReponseQuestionEnEchec () {
+		Response res = null;
+		try {
+			res = clientService.creerQuestion("Quelle heure est-il ?");
+			res = expertService.getQuestion("nicolas");
+			res = expertService.repondre("nicolas", 1);
+			res = clientService.getReponse(1);
+			
+		} finally {
+			clean();
+		}
+		return res;
 	}
 	
 	

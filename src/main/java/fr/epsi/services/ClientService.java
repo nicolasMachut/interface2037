@@ -7,14 +7,13 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.glassfish.jersey.server.spi.ResponseErrorMapper;
 
 import fr.epsi.entites.Question;
 import fr.epsi.outils.Log;
-
 
 public class ClientService extends Service {
 	
@@ -47,7 +46,6 @@ public class ClientService extends Service {
 						.header("Access-Control-Expose-Headers", "Location")
 						.header("Location", new URI(adresseRessource))
 						.build();
-				
 		} catch (Exception e) {
 			
 			Log.ecris("Problème lors de l'enregistrement de la question : " + e.getClass() + " - " + e.getMessage());
@@ -59,7 +57,7 @@ public class ClientService extends Service {
 	
 	
 	@GET
-	@Path("/reponse/{code}")
+	@Path("/question/{code}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response getReponse (@PathParam("code") int id) {
 		
@@ -85,9 +83,14 @@ public class ClientService extends Service {
 								.build();
 				} else {
 					// La question à été répondue, on l'envoie 
+					CacheControl cc = new CacheControl();
+					cc.setMaxAge(3000);
+					cc.setPrivate(false);
+					
 					response = Response
 								.ok(mapper.writeValueAsString(question))
 								.header("Access-Control-Allow-Origin", "*")
+								.cacheControl(cc)
 								.build();
 				}
 			} catch (Exception e) {
