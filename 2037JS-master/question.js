@@ -62,7 +62,7 @@ function poserQuestion()
 	req.success(function(req, status, xhr) {
 		if (xhr.status == 202) {
 			message = "Votre question à bien été enregistrée.";
-			$("#reponse").addClass("alert alert-success");
+			$("#reponse").addClass("alert alert-success col-sm-10");
 			$("#reponse").empty();
 			var location = xhr.getResponseHeader("Location");
 //			$("#reponse").append("<p onclick=\"getReponse(\""+location+"\")\">"+location+"</p>");
@@ -73,7 +73,7 @@ function poserQuestion()
 	req.error(function( req, status, xhr ) {
 		if (xhr.status == 500) {
 			message = "Erreur lors de l'enregistrement de la question.";
-			$("#reponse").addClass("alert alert-error");
+			$("#reponse").addClass("alert alert-error col-sm-10");
 		}
 	});
 
@@ -109,15 +109,34 @@ function demanderReponse()
 		
 		if (xhr.status == 202) {
 			message = "Votre question n'a pas encore de réponse";
-			$("#reponse").addClass("alert alert-info");
+			$("#reponse").addClass("alert alert-info col-sm-10");
 			$("#reponse").empty();
 			var location = xhr.getResponseHeader("Location");
 			$("#reponse").append("<p>"+message+"</p>");
 		}
 		
+		if (xhr.status == 200) {
+			var question= JSON.parse(xhr.responseText);
+			message = "Votre question a trouvé une reponse." ;
+			$("#reponse").addClass("alert alert-success col-sm-10");
+			$("#reponse").empty();
+			$("#reponse").append("<p>"+message+"</p>");
+		
+			message = "Question initiale : "+question.question ;
+			$("#reponse").append("<p>"+message+"</p>");
+			
+			message = "Reponse apportée : "+question.reponse ;
+			$("#reponse").append("<p>"+message+"</p>");
+			
+			message = "Expert ayant répondu: "+question.expert ;
+			$("#reponse").append("<p>"+message+"</p>");
+			
+			
+		}
+		
 		if (xhr.status == 404) {
 			message = "Votre uestion n'existe pas, entrez un nouvel ID";
-			$("#reponse").addClass("alert alert-danger");
+			$("#reponse").addClass("alert alert-danger col-sm-10");
 			$("#reponse").empty();
 			var location = xhr.getResponseHeader("Location");
 			$("#reponse").append("<p>"+message+"</p>");
@@ -129,18 +148,18 @@ function demanderReponse()
 		
 		if (req.status == 500) {
 			message = "Erreur serveur";
-			$("#reponse").addClass("alert alert-error");
+			$("#reponse").addClass("alert alert-error col-sm-10");
 			$("#reponse").append("<p>"+message+"</p>");
 		}
 		if (req.status == 404) {
 			message = "Votre question n'existe pas, entrez un nouvel ID";
-			$("#reponse").addClass("alert alert-danger");
+			$("#reponse").addClass("alert alert-danger col-sm-10");
 			$("#reponse").empty();
 			$("#reponse").append("<p>"+message+"</p>");
 		}
 		else{
 			message = "Erreur survenue lors de la prise de contact avec le serveur, il dois etre au toilettes";
-			$("#reponse").addClass("alert alert-danger");
+			$("#reponse").addClass("alert alert-danger col-sm-10");
 			$("#reponse").empty();
 			$("#reponse").append("<p>"+message+"</p>");
 		}

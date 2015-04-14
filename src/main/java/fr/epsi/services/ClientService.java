@@ -75,7 +75,7 @@ public class ClientService extends Service {
 		} else {
 			try {
 				String adresseRessource = RACINE + "client/reponse/" + id;
-				if (question.estEnAttente()) {
+				if (question.estEnAttente() || question.estEnTraitement()) {
 					// La question n'a pas encore été répondue
 					response = Response
 								.accepted(new URI(adresseRessource))

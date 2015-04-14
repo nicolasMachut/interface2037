@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,11 +46,13 @@ public class ExpertService extends Service {
 
 		if (question != null) {
 			question.mettreEnTraitement(idExpert);
-
+	
 			// Question trouvée
 			reponse = Response
 					.accepted(question)
 					.header("Access-Control-Allow-Origin", "*")
+					.header("Allow-Control-Allow-Methods","POST,GET,OPTIONS,PUT")
+					.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 					.build();
 		} else {
 			// Aucune question en attente
@@ -59,6 +62,20 @@ public class ExpertService extends Service {
 					.build();
 		}
 
+		return reponse;
+	}
+//	OPTIONS
+	
+	@OPTIONS
+	@Path("/question/{idExpert}/{id}/{reponse}")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response repondreOptions (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr) throws SQLException {
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.build();
 		return reponse;
 	}
 
@@ -95,7 +112,6 @@ public class ExpertService extends Service {
 	public Response repondre (String idExpert, int idQuestion, String etat, String reponseStr) {
 
 		Question question = Question.trouverQuestionParId(idQuestion);
-
 		Response reponse;
 
 		if (question != null) {
@@ -106,6 +122,7 @@ public class ExpertService extends Service {
 				reponse = Response
 						.ok()
 						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Request-Method", "*")
 						.build();
 			} else {
 				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				
