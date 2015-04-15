@@ -51,7 +51,7 @@
         </div>
         </br></br>
 		<div>
-          <button  type="button"  onclick="demanderQuestion()" class="btn btn-success">Demander la prochaine question</button>
+          <button  type="button"  onclick="demanderQuestion()" class="btn btn-info">Demander la prochaine question</button>
         </div>
         </br>
         	<div id="reponse"></div>
@@ -71,11 +71,12 @@
      
       <div class="form-group">
         <div class="col-sm-10">
-          <button  type="button"  onclick="EnvoyerReponse()" class="btn btn-default">Envoyer</button>
+          <button  type="button"  onclick="EnvoyerReponse()" class="btn btn-success">Envoyer</button>
+          <button  type="button"  onclick="signifierReponseImpossible()" class="btn btn-danger"><span class="glyphicon glyphicon-remove">Impossible</span></button>
         </div>
       </div>
     </form>
-    
+    <div id="retourReponse"></div>
 
     
   </div>

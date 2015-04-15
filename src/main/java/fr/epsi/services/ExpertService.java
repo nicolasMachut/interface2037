@@ -69,12 +69,13 @@ public class ExpertService extends Service {
 	@OPTIONS
 	@Path("/question/{idExpert}/{id}/{reponse}")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	public Response repondreOptions (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr) throws SQLException {
+	public Response repondreOptions (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr){
 		Response reponse;
 		reponse = Response
 		.ok()
 		.header("Access-Control-Allow-Origin", "*")
 		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT")
 		.build();
 		return reponse;
 	}
@@ -95,6 +96,20 @@ public class ExpertService extends Service {
 		return repondre(idExpert, idQuestion, Question.OK, reponseStr);
 	}
 
+	
+	@OPTIONS
+	@Path("/question/{idExpert}/{id}")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response repondreOptionsNoRep (@PathParam("idExpert") String idExpert, @PathParam("id") int id){
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT")
+		.build();
+		return reponse;
+	}
 	/**
 	 * <p>Permet au systeme expert de signifier qu'il n'a pas de réponse à donner à la question passé en paramètre</p>
 	 * @param idExpert
@@ -123,6 +138,7 @@ public class ExpertService extends Service {
 						.ok()
 						.header("Access-Control-Allow-Origin", "*")
 						.header("Access-Control-Request-Method", "*")
+						.header("Access-Control-Allow-Methods", "PUT")
 						.build();
 			} else {
 				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				
@@ -132,7 +148,6 @@ public class ExpertService extends Service {
 			// La question n'existe pas
 			reponse = Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 		}
-
 		return reponse;
 	}
 }

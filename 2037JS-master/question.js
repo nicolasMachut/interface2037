@@ -46,6 +46,10 @@ function poserQuestion()
 	var question = $("#question").val();
 
 	if (question == "") {
+		$("#reponse").empty();
+		message = "Veuillez entrer une question";
+		$("#reponse").addClass("alert alert-danger col-sm-10");
+		$("#reponse").append("<p>"+message+"</p>");
 		return;
 	}	
 
@@ -65,8 +69,7 @@ function poserQuestion()
 			$("#reponse").addClass("alert alert-success col-sm-10");
 			$("#reponse").empty();
 			var location = xhr.getResponseHeader("Location");
-//			$("#reponse").append("<p onclick=\"getReponse(\""+location+"\")\">"+location+"</p>");
-			$("#reponse").append("<p onclick=\"getReponse('toto')\">"+location+"</p>");
+			$("#reponse").append("<a>"+location+"</a>");
 		}
 	});
 
@@ -92,6 +95,10 @@ function demanderReponse()
 	var idquestion = $("#idQuestion").val();
 
 	if (idquestion == "") {
+		$("#reponse").empty();
+		message = "Entrez un ID de question";
+		$("#reponse").addClass("alert alert-danger col-sm-10");
+		$("#reponse").append("<p>"+message+"</p>");
 		return;
 	}	
 
