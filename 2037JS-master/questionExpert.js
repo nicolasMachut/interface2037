@@ -79,7 +79,7 @@ function EnvoyerReponse()
 	req.success(function(req, status, xhr) {
 		
 		if (xhr.status == 200) {
-			message = "Votre reponse a bien été enregistrée";
+			message = "Votre reponse a bien été enregistrée, vous pouvez demander d'autres questions.";
 			$("#retourReponse").addClass("alert alert-success col-sm-10");
 			$("#retourReponse").empty();
 			$("#retourReponse").append("<p>"+message+"</p>");
@@ -91,7 +91,7 @@ function EnvoyerReponse()
 
 	req.error(function( req, status, err ) {
 		if (req.status == 403) {
-			message = "Vous n'avez pas le droit de répondere à cette question";
+			message = "Vous n'avez pas le droit de répondre à cette question, soit vous y avez déjà répondu, soit un autre systeme expert est en train de la traiter.";
 		}else{
 			message = "Une erreur est survenue";
 		}

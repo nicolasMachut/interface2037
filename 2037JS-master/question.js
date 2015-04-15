@@ -44,7 +44,7 @@ function poserQuestion()
 {
 	$("#reponse").removeClass();
 	var question = $("#question").val();
-
+	var message;
 	if (question == "") {
 		$("#reponse").empty();
 		message = "Veuillez entrer une question";
@@ -61,7 +61,7 @@ function poserQuestion()
 		dataType : "text",
 		type : "POST"
 	});
-	var message;
+	
 
 	req.success(function(req, status, xhr) {
 		if (xhr.status == 202) {
@@ -69,21 +69,38 @@ function poserQuestion()
 			$("#reponse").addClass("alert alert-success col-sm-10");
 			$("#reponse").empty();
 			var location = xhr.getResponseHeader("Location");
-			$("#reponse").append("<a>"+location+"</a>");
+			var coolVar = location;
+			var partsArray = coolVar.split('/');
+			partsArray[6]
+			$("#reponse").append("<p>Votre question à bien été enregistrée.</p>");
+			$("#reponse").append("<p>L'url de la ressource est : "+location+"</p>");
+			$("#reponse").append("<p>L'ID de votre question est le : "+partsArray[6]+", vous en aurez besoin pour consulter les réponses</p>");
+			$("#reponse").append("<p>Vous pouvez aussi cliquer sur le lien ci-dessous :</p>");
+			$("#reponse").append("<p><a id='lien' href='./ConsulterReponse.html?id="+partsArray[6]+"'>"+xhr.getResponseHeader("Location")+"?id="+partsArray[6]+"</a></p>");
+			
 		}
 	});
 
 	req.error(function( req, status, xhr ) {
 		if (xhr.status == 500) {
 			message = "Erreur lors de l'enregistrement de la question.";
-			$("#reponse").addClass("alert alert-error col-sm-10");
+			$("#reponse").empty();
+			$("#reponse").addClass("alert alert-danger col-sm-10");
+			$("#reponse").append("<p>"+message+"</p>");
 		}
+		else
+			{
+			message = "Une erreur est survenue.";
+			$("#reponse").empty();
+			$("#reponse").addClass("alert alert-danger col-sm-10");
+		$("#reponse").append("<p>"+message+"</p>");
+			}
 	});
 
 	req.done(function(req, status, xhr){
-		$("#reponse").append("<p>"+message+"</p>");
+		
 		if (xhr.status == 201) {
-			$(".listview_test").append("<p><a id='lien' onclick='getReponse()'>"+xhr.getResponseHeader("Location")+"</a></p>");
+			$("#reponse").append("<p><a id='lien' onclick='getReponse()'>"+xhr.getResponseHeader("Location")+"</a></p>");
 		}
 	});
 }
@@ -165,7 +182,7 @@ function demanderReponse()
 			$("#reponse").append("<p>"+message+"</p>");
 		}
 		else{
-			message = "Erreur survenue lors de la prise de contact avec le serveur, il dois etre au toilettes";
+			message = "Erreur survenue lors de la prise de contact avec le serveur, il dois etre au toilettes, entrez un numéro de question valide pour le faire venir plus vite.";
 			$("#reponse").addClass("alert alert-danger col-sm-10");
 			$("#reponse").empty();
 			$("#reponse").append("<p>"+message+"</p>");
