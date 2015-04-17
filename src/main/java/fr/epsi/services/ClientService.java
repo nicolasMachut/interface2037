@@ -30,7 +30,11 @@ public class ClientService extends Service {
 	@POST
 	@Path("/question")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+<<<<<<< HEAD
 	public Response creerQuestion (@FormParam("questionText") String questionText) {
+=======
+	public Response creerQuestion (@PathParam("param") String questionStr) {
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
 		
 		Response reponse;
 		

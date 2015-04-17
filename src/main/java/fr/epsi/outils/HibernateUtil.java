@@ -19,9 +19,15 @@ public class HibernateUtil {
 
 		Properties proprietes = new Properties();
         proprietes.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+<<<<<<< HEAD
         proprietes.put("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/"+bdd);
         proprietes.put("hibernate.connection.username", user);
         proprietes.put("hibernate.connection.password", mdp);
+=======
+        proprietes.put("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/webservice_restfull");
+        proprietes.put("hibernate.connection.username", "root");
+        proprietes.put("hibernate.connection.password", "yourpasswordhere");
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
         proprietes.put("hibernate.current_session_context_class", "thread");
         proprietes.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         proprietes.put("hibernate.hbm2ddl.auto", "create-drop");

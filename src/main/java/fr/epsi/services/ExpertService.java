@@ -51,6 +51,10 @@ public class ExpertService extends Service {
 			reponse = Response
 					.accepted(question)
 					.header("Access-Control-Allow-Origin", "*")
+<<<<<<< HEAD
+=======
+					.header("Allow-Control-Allow-Methods","POST,GET,OPTIONS,PUT")
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
 					.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 					.build();
 		} else {
@@ -63,6 +67,7 @@ public class ExpertService extends Service {
 
 		return reponse;
 	}
+<<<<<<< HEAD
 	
 	@OPTIONS
 	@Path("/question")
@@ -78,6 +83,24 @@ public class ExpertService extends Service {
 		return this.autoriserPut();
 	}
 	
+=======
+//	OPTIONS
+	
+	@OPTIONS
+	@Path("/question/{idExpert}/{id}/{reponse}")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response repondreOptions (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr){
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT")
+		.build();
+		return reponse;
+	}
+
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
 
 	/**
 	 * <p>Permet au system expert de répondre à une question</p>
@@ -95,7 +118,23 @@ public class ExpertService extends Service {
 	}
 
 	
+<<<<<<< HEAD
 	
+=======
+	@OPTIONS
+	@Path("/question/{idExpert}/{id}")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	public Response repondreOptionsNoRep (@PathParam("idExpert") String idExpert, @PathParam("id") int id){
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT")
+		.build();
+		return reponse;
+	}
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
 	/**
 	 * <p>Permet au systeme expert de signifier qu'il n'a pas de réponse à donner à la question passé en paramètre</p>
 	 * @param idExpert
@@ -124,6 +163,10 @@ public class ExpertService extends Service {
 						.ok()
 						.header("Access-Control-Allow-Origin", "*")
 						.header("Access-Control-Request-Method", "*")
+<<<<<<< HEAD
+=======
+						.header("Access-Control-Allow-Methods", "PUT")
+>>>>>>> 5ad58d9ba2694e37a8f0e4f4ac86d42bcf09d274
 						.build();
 			} else {
 				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				
