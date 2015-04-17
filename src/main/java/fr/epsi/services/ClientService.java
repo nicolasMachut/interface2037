@@ -3,7 +3,6 @@ package fr.epsi.services;
 import java.net.URI;
 import java.util.Date;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -33,8 +31,6 @@ public class ClientService extends Service {
 	@Path("/question")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response creerQuestion (@FormParam("questionText") String questionText) {
-		
-		System.out.println(questionText);
 		
 		Response reponse;
 		
@@ -93,16 +89,11 @@ public class ClientService extends Service {
 								.build();
 				} else {
 					// La question à été répondue, on l'envoie 
-					CacheControl cc = new CacheControl();
 					Date expirationDate = new Date(System.currentTimeMillis()+9000000);
-					cc.setMaxAge(3000);
-					cc.setPrivate(false);
-					
 					
 					response = Response
 								.ok(mapper.writeValueAsString(question))
 								.header("Access-Control-Allow-Origin", "*")
-								//.cacheControl(cc)
 								.expires(expirationDate)
 								.build();
 				}

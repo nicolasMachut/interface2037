@@ -12,16 +12,19 @@ public class HibernateUtil {
 	private static SessionFactory sessionFactory;
 
 	private static void buildSessionFactory () {
+		
+		String bdd = "webservice_restful";
+		String mdp = "epsi812AJH";
+		String user = "root";
 
 		Properties proprietes = new Properties();
         proprietes.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-        proprietes.put("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/webservice_restfull");
-        proprietes.put("hibernate.connection.username", "root");
-        proprietes.put("hibernate.connection.password", "epsi812AJH");
+        proprietes.put("hibernate.connection.url", "jdbc:mysql://127.0.0.1:3306/"+bdd);
+        proprietes.put("hibernate.connection.username", user);
+        proprietes.put("hibernate.connection.password", mdp);
         proprietes.put("hibernate.current_session_context_class", "thread");
         proprietes.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        proprietes.put("hibernate.show_sql", "true");
-        proprietes.put("hibernate.hbm2ddl.auto", "update");
+        proprietes.put("hibernate.hbm2ddl.auto", "create-drop");
 
 		try {
 				

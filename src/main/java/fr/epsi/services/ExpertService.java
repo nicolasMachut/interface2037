@@ -3,7 +3,6 @@ package fr.epsi.services;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
@@ -25,7 +24,6 @@ public class ExpertService extends Service {
 	 * <p>Fournie une question en attente au systeme expert au format JSON</p>
 	 * <p>La méthode est synchronized pour empecher plusieurs systemes experts d'obtenir la mème question</p>
 	 * <p>Méthode GET car le systeme expert demande la représentation d'une ressource</p>
-	 * <p>Un petit doute içi car l'état du serveur est modifié par la requête, peut être un POST ?</p>
 	 * @return
 	 * @throws IOException 
 	 * @throws JsonMappingException 
@@ -53,7 +51,6 @@ public class ExpertService extends Service {
 			reponse = Response
 					.accepted(question)
 					.header("Access-Control-Allow-Origin", "*")
-					.header("Allow-Control-Allow-Methods","POST,GET,OPTIONS,PUT")
 					.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 					.build();
 		} else {
@@ -66,38 +63,21 @@ public class ExpertService extends Service {
 
 		return reponse;
 	}
-//	OPTIONS
 	
 	@OPTIONS
 	@Path("/question")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	
-	public Response repondreOptions ( ){
-		Response reponse;
-		reponse = Response
-		.ok()
-		.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Request-Method", "*")
-		.header("Access-Control-Allow-Methods", "PUT")
-		.build();
-		return reponse;
+	public Response repondreOptions () {
+		return this.autoriserPut();
 	}
 	
 	@OPTIONS
 	@Path("/question/impossible")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	
-	public Response repondreOptionsImpossible ( ){
-		Response reponse;
-		reponse = Response
-		.ok()
-		.header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Request-Method", "*")
-		.header("Access-Control-Allow-Methods", "PUT")
-		.build();
-		return reponse;
+	public Response repondreOptionsImpossible () {
+		return this.autoriserPut();
 	}
-
+	
 
 	/**
 	 * <p>Permet au system expert de répondre à une question</p>
@@ -108,7 +88,7 @@ public class ExpertService extends Service {
 	 * @throws SQLException 
 	 */
 	@PUT
-	@Path("/question/impossible")
+	@Path("/question")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response repondre ( @FormParam("idExpert") String idExpert, @FormParam("idQuestion") int idQuestion, @FormParam("reponseText") String reponseStr) throws SQLException {
 		return repondre(idExpert, idQuestion, Question.OK, reponseStr);
@@ -123,7 +103,7 @@ public class ExpertService extends Service {
 	 * @return
 	 */
 	@PUT
-	@Path("/question")
+	@Path("/question/impossible")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
 	public Response repondre (@FormParam("idExpert") String idExpert, @FormParam("idQuestion") int idQuestion) {
 		return repondre(idExpert, idQuestion, Question.ERREUR, "");
@@ -144,7 +124,6 @@ public class ExpertService extends Service {
 						.ok()
 						.header("Access-Control-Allow-Origin", "*")
 						.header("Access-Control-Request-Method", "*")
-						.header("Access-Control-Allow-Methods", "PUT")
 						.build();
 			} else {
 				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				

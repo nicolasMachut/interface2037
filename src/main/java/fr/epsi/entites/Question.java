@@ -15,6 +15,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import fr.epsi.outils.HibernateUtil;
+import fr.epsi.outils.Log;
 
 
 @Entity
@@ -113,6 +114,7 @@ public class Question {
         session.beginTransaction();
         session.save(this);
         session.getTransaction().commit();
+        Log.ecris("Enregistrement de la question : " + this.question);
 		return this;
 	}
 	
@@ -147,6 +149,7 @@ public class Question {
 		session.beginTransaction();
 		session.update(this);
 		session.getTransaction().commit();
+		Log.ecris("Question : " + this.id + " répondu par : " + this.expert + " : " + reponseStr);
 	}
 	
 	/**
@@ -160,6 +163,7 @@ public class Question {
 		session.beginTransaction();
 		session.update(this);
 		session.getTransaction().commit();
+		Log.ecris("Mise en traitement de la question " + this.id + " par l'expert " + idExpert);
 	}
 	
 	/**

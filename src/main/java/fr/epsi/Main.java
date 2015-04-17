@@ -3,10 +3,16 @@ package fr.epsi;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
 
+/**
+ * <p>Classe de démarrage du programme et du serveur jetty</p>
+ * @author nicolas
+ *
+ */
 public class Main {
 	
 	public static final String PORT_APPS = "8283";
 	public static final String PORT_SQUID = "8282";
+	
     public static void main(String[] args) throws Exception {
     	
         String port = System.getenv("PORT");
