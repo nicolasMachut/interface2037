@@ -3,7 +3,10 @@ package fr.epsi.services;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -45,11 +48,13 @@ public class ExpertService extends Service {
 
 		if (question != null) {
 			question.mettreEnTraitement(idExpert);
-
+	
 			// Question trouvée
 			reponse = Response
 					.accepted(question)
 					.header("Access-Control-Allow-Origin", "*")
+					.header("Allow-Control-Allow-Methods","POST,GET,OPTIONS,PUT")
+					.header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 					.build();
 		} else {
 			// Aucune question en attente
@@ -59,6 +64,37 @@ public class ExpertService extends Service {
 					.build();
 		}
 
+		return reponse;
+	}
+//	OPTIONS
+	
+	@OPTIONS
+	@Path("/question")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	
+	public Response repondreOptions ( ){
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "PUT")
+		.build();
+		return reponse;
+	}
+	
+	@OPTIONS
+	@Path("/question/impossible")
+	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
+	
+	public Response repondreOptionsImpossible ( ){
+		Response reponse;
+		reponse = Response
+		.ok()
+		.header("Access-Control-Allow-Origin", "*")
+		.header("Access-Control-Request-Method", "*")
+		.header("Access-Control-Allow-Methods", "PUT")
+		.build();
 		return reponse;
 	}
 
@@ -72,12 +108,14 @@ public class ExpertService extends Service {
 	 * @throws SQLException 
 	 */
 	@PUT
-	@Path("/question/{idExpert}/{id}/{reponse}")
+	@Path("/question/impossible")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int idQuestion, @PathParam("reponse") String reponseStr) throws SQLException {
+	public Response repondre ( @FormParam("idExpert") String idExpert, @FormParam("idQuestion") int idQuestion, @FormParam("reponseText") String reponseStr) throws SQLException {
 		return repondre(idExpert, idQuestion, Question.OK, reponseStr);
 	}
 
+	
+	
 	/**
 	 * <p>Permet au systeme expert de signifier qu'il n'a pas de réponse à donner à la question passé en paramètre</p>
 	 * @param idExpert
@@ -85,17 +123,16 @@ public class ExpertService extends Service {
 	 * @return
 	 */
 	@PUT
-	@Path("/question/{idExpert}/{id}")
+	@Path("/question")
 	@Produces(FORMAT_REPONSE_PAR_DEFAUT)
-	public Response repondre (@PathParam("idExpert") String idExpert, @PathParam("id") int id) {
-		return repondre(idExpert, id, Question.ERREUR, "");
+	public Response repondre (@FormParam("idExpert") String idExpert, @FormParam("idQuestion") int idQuestion) {
+		return repondre(idExpert, idQuestion, Question.ERREUR, "");
 	}
 
 	
 	public Response repondre (String idExpert, int idQuestion, String etat, String reponseStr) {
 
 		Question question = Question.trouverQuestionParId(idQuestion);
-
 		Response reponse;
 
 		if (question != null) {
@@ -106,6 +143,8 @@ public class ExpertService extends Service {
 				reponse = Response
 						.ok()
 						.header("Access-Control-Allow-Origin", "*")
+						.header("Access-Control-Request-Method", "*")
+						.header("Access-Control-Allow-Methods", "PUT")
 						.build();
 			} else {
 				reponse = Response.status(Response.Status.FORBIDDEN).header("Access-Control-Allow-Origin", "*").build();				
@@ -115,7 +154,6 @@ public class ExpertService extends Service {
 			// La question n'existe pas
 			reponse = Response.status(Response.Status.NOT_FOUND).header("Access-Control-Allow-Origin", "*").build();
 		}
-
 		return reponse;
 	}
 }

@@ -33,7 +33,7 @@
 			<span concordion:execute="#result = poserQuestionVerifierSucces(#question)"></span>
 			<ul>	
 				<li>Alors le serveur indique qu'il à enregistré la question avec le code :  <span concordion:assertEquals="#result.status">202</span></li>
-				<li>Et il permet à l'usager de localiser la réponse lorsqu'elle sera disponible : <span concordion:assertEquals="#result.location">http://localhost:8283/client/reponse/1</span></li>
+				<li>Et il permet à l'usager de localiser la réponse lorsqu'elle sera disponible : <span concordion:assertEquals="#result.location">http://localhost:8282/interface2037/client/question/1</span></li>
 			</ul>
 		</div>
 	</div>

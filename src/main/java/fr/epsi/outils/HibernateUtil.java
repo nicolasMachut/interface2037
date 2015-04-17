@@ -21,7 +21,7 @@ public class HibernateUtil {
         proprietes.put("hibernate.current_session_context_class", "thread");
         proprietes.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         proprietes.put("hibernate.show_sql", "true");
-        proprietes.put("hibernate.hbm2ddl.auto", "create-drop");
+        proprietes.put("hibernate.hbm2ddl.auto", "update");
 
 		try {
 				

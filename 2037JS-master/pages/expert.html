@@ -6,12 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>System expert</title>
-	<script src="./jquery.js"></script>
-	<script src="./question.js"></script>
+	<script src="../js/jquery.js"></script>
+	<script src="../js/Expert.js"></script>
 	
     <!-- Bootstrap -->
-	 <script src="js/bootstrap.min.js"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+	 <script src="../js/bootstrap.min.js"></script>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -31,7 +31,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Client WebService</a>
+          <a class="navbar-brand" href="#">System Expert</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
@@ -41,44 +41,44 @@
         </div>
       </div>
     </nav>
+    
 	</br></br></br></br>
 
-  <div id="error" class="alert alert-danger" role="alert" style="display : none">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="sr-only">Error:</span>
-   
-  </div>
-
   <div class="container">
-<!-- next question printed here -->
-    <h2>Here is the question :</h2>
-    <input type="hidden" id="idQuestion" />
-    <div class="theQuestion">
+  
+  		<div>
+          <input  class="col-sm-3" id="expertName" placeholder="Votre nom d'expert">
+        </div>
+        </br></br>
+		<div>
+          <button  type="button"  onclick="demanderQuestion()" class="btn btn-info"><span class="glyphicon glyphicon-search"></span> Demander la prochaine question</button>
+        </div>
+        </br>
+        	<div id="reponse"></div>
+        	
+    		<div type="hidden" id="idQuestion"></div>
     
-
-    
-    </div>
+    		<div class="theQuestion"></div>
+    		
 <!-- Submit the response here -->
     <form class="form-horizontal" role="form">
       <div class="form-group">
         <label for="question" class="col-sm-10 ">Proposer une réponse</label>
         <div class="col-sm-10">
-          <input  class="form-control col-sm-10" id="reponse" placeholder="Réponse...">
+          <input  class="form-control col-sm-10" id="reponseText" placeholder="Réponse...">
         </div>
       </div>
      
       <div class="form-group">
         <div class="col-sm-10">
-          <button  type="button"  onclick="EnvoyerReponse()" class="btn btn-default">Envoyer</button>
+          <button  type="button"  onclick="EnvoyerReponse()" class="btn btn-success"><span class="glyphicon glyphicon-ok"></span> Envoyer</button>
+          <button  type="button"  onclick="signifierReponseImpossible()" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Impossible</button>
         </div>
       </div>
     </form>
+    <div id="retourReponse"></div>
 
-    <!-- This div is populated by the javascript -->
-    <div class="listview_test">
-
-    </div>
-
+    
   </div>
       
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -133,7 +133,7 @@
 
           </footer>
       </div>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
   </body>
   <!-- Footer - bloc-3 -->
 
